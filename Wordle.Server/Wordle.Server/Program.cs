@@ -2,7 +2,13 @@ using Scalar.AspNetCore;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Add services to the container.
+builder.Services.AddCors(options =>
+    options.AddPolicy("AllowWordleClient", policy =>
+        policy.WithOrigins("https://localhost:44444", "https://wordle-client.azurewebsites.net")
+              .AllowAnyHeader()
+              .AllowAnyMethod()
+    )
+);
 
 builder.Services.AddControllers();
 builder.Services.AddOpenApi();
@@ -10,7 +16,6 @@ builder.Services.AddOpenApi();
 
 var app = builder.Build();
 
-// Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
     app.MapOpenApi();
@@ -18,6 +23,8 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
+
+app.UseCors("AllowWordleClient");
 
 app.UseAuthorization();
 
