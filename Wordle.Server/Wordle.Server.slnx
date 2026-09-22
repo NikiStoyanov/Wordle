@@ -1,3 +1,5 @@
 <Solution>
-  <Project Path="Wordle.Server/Wordle.Server.csproj" />
+  <Project Path="Wordle.Server.Api/Wordle.Server.Api.csproj" Id="89706f14-7dbc-4bf8-a312-d5408fad5d4f" />
+  <Project Path="Wordle.Server.Core/Wordle.Server.Core.csproj" Id="b4592b81-24c2-4642-af6d-498c81070e72" />
+  <Project Path="Wordle.Server.Infrastructure/Wordle.Server.Infrastructure.csproj" Id="065f87bd-083e-41ba-aca2-807c8cc5f3a6" />
 </Solution>
