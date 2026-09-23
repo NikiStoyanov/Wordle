@@ -10,4 +10,8 @@
     <ProjectReference Include="..\Wordle.Server.Core\Wordle.Server.Core.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="10.0.12" />
+  </ItemGroup>
+
 </Project>
