@@ -1,6 +1,8 @@
 using Microsoft.EntityFrameworkCore;
 using Scalar.AspNetCore;
+using Wordle.Server.Core.Interfaces.Repositories;
 using Wordle.Server.Infrastructure.Data;
+using Wordle.Server.Infrastructure.Repositories;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -15,6 +17,9 @@ builder.Services.AddCors(options =>
 builder.Services.AddDbContext<WordleDbContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"))
 );
+
+builder.Services.AddScoped<IWordRepository, WordRepository>();
+builder.Services.AddScoped<IUserRepository, UserRepository>();
 
 builder.Services.AddControllers();
 builder.Services.AddOpenApi();

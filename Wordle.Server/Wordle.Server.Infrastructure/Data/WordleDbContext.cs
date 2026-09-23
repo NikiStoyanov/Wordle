@@ -1,7 +1,7 @@
-﻿using Microsoft.EntityFrameworkCore;
-using Wordle.Server.Core.Entities;
+﻿namespace Wordle.Server.Infrastructure.Data;
 
-namespace Wordle.Server.Infrastructure.Data;
+using Microsoft.EntityFrameworkCore;
+using Core.Entities;
 
 public class WordleDbContext : DbContext
 {
