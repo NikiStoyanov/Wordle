@@ -23,7 +23,6 @@ public class WordleDbContext : DbContext
 
         modelBuilder.Entity<Word>()
             .Property(w => w.Text)
-            .HasMaxLength(7)
             .IsRequired();
 
         modelBuilder.Entity<Word>()

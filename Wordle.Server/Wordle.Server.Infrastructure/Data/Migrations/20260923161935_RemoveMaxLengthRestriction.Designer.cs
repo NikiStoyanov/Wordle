@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Wordle.Server.Infrastructure.Data;
 
@@ -11,9 +12,11 @@ using Wordle.Server.Infrastructure.Data;
 namespace Wordle.Server.Infrastructure.Data.Migrations
 {
     [DbContext(typeof(WordleDbContext))]
-    partial class WordleDbContextModelSnapshot : ModelSnapshot
+    [Migration("20260923161935_RemoveMaxLengthRestriction")]
+    partial class RemoveMaxLengthRestriction
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder

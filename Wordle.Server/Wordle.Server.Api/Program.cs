@@ -24,8 +24,25 @@ builder.Services.AddScoped<IUserRepository, UserRepository>();
 builder.Services.AddControllers();
 builder.Services.AddOpenApi();
 
-
 var app = builder.Build();
+
+using (var scope = app.Services.CreateScope())
+{
+    var services = scope.ServiceProvider;
+    var logger = services.GetRequiredService<ILogger<Program>>();
+
+    try
+    {
+        var context = services.GetRequiredService<WordleDbContext>();
+        var dictionariesPath = Path.Combine(app.Environment.ContentRootPath, "Dictionaries");
+
+        await DbSeeder.SeedWordsAsync(context, dictionariesPath, logger);
+    }
+    catch (Exception ex)
+    {
+        logger.LogError(ex, "Error while seeding the database!");
+    }
+}
 
 if (app.Environment.IsDevelopment())
 {
