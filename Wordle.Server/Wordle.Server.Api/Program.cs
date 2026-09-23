@@ -1,6 +1,8 @@
 using Microsoft.EntityFrameworkCore;
 using Scalar.AspNetCore;
 using Wordle.Server.Core.Interfaces.Repositories;
+using Wordle.Server.Core.Interfaces.Services;
+using Wordle.Server.Core.Services;
 using Wordle.Server.Infrastructure.Data;
 using Wordle.Server.Infrastructure.Repositories;
 
@@ -20,6 +22,9 @@ builder.Services.AddDbContext<WordleDbContext>(options =>
 
 builder.Services.AddScoped<IWordRepository, WordRepository>();
 builder.Services.AddScoped<IUserRepository, UserRepository>();
+
+builder.Services.AddScoped<IAuthService, AuthService>();
+builder.Services.AddScoped<ITokenService, TokenService>();
 
 builder.Services.AddControllers();
 builder.Services.AddOpenApi();

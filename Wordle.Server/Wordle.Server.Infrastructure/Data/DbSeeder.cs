@@ -1,8 +1,8 @@
-﻿using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Logging;
-using Wordle.Server.Core.Entities;
+﻿namespace Wordle.Server.Infrastructure.Data;
 
-namespace Wordle.Server.Infrastructure.Data;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
+using Core.Entities;
 
 public static class DbSeeder
 {

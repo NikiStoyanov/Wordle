@@ -20,10 +20,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Controllers\" />
-  </ItemGroup>
-
-  <ItemGroup>
     <ProjectReference Include="..\Wordle.Server.Core\Wordle.Server.Core.csproj" />
     <ProjectReference Include="..\Wordle.Server.Infrastructure\Wordle.Server.Infrastructure.csproj" />
   </ItemGroup>

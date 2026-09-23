@@ -7,7 +7,7 @@ using Core.Interfaces.Repositories;
 
 public class UserRepository : IUserRepository
 {
-    WordleDbContext _context;
+    private WordleDbContext _context;
 
     public UserRepository(WordleDbContext context)
     {

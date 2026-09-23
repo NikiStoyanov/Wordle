@@ -7,7 +7,7 @@ using Core.Interfaces.Repositories;
 
 public class WordRepository : IWordRepository
 {
-    WordleDbContext _context;
+    private WordleDbContext _context;
 
     public WordRepository(WordleDbContext context)
     {
