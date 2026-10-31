@@ -1,4 +1,4 @@
-﻿namespace Wordle.Server.Infrastructure.Data;
+namespace Wordle.Server.Infrastructure.Data;
 
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
@@ -12,12 +12,11 @@ public static class DbSeeder
 
         if (await context.Words.AnyAsync())
         {
-            logger.LogInformation("Database already have words. Skipping Seeding.");
+            logger.LogInformation("Database already has words. Skipping Seeding.");
             return;
         }
 
         var fileNames = new[] { "english.txt" };
-
         var uniqueStrings = new HashSet<string>();
 
         foreach (var fileName in fileNames)
@@ -58,5 +57,33 @@ public static class DbSeeder
 
             logger.LogInformation($"Successfully added {uniqueStrings.Count} unique words to the database.");
         }
+    }
+
+    public static async Task SeedDailyChallengesAsync(WordleDbContext context, DateTime date, ILogger logger)
+    {
+        for (int length = 3; length <= 8; length++)
+        {
+            var exists = await context.DailyChallenges.AnyAsync(c => c.Date.Date == date.Date && c.Length == length);
+            if (!exists)
+            {
+                var randomWord = await context.Words
+                    .Where(w => w.Length == length && w.IsActive)
+                    .OrderBy(w => Guid.NewGuid())
+                    .FirstOrDefaultAsync();
+
+                if (randomWord != null)
+                {
+                    context.DailyChallenges.Add(new DailyChallenge
+                    {
+                        Date = date.Date,
+                        Length = length,
+                        WordId = randomWord.Id
+                    });
+                    logger.LogInformation($"Created daily challenge for date {date:yyyy-MM-dd} with length {length} ({randomWord.Text}).");
+                }
+            }
+        }
+
+        await context.SaveChangesAsync();
     }
 }

@@ -1,4 +1,4 @@
-﻿namespace Wordle.Server.Infrastructure.Repositories;
+namespace Wordle.Server.Infrastructure.Repositories;
 
 using Microsoft.EntityFrameworkCore;
 using Core.Entities;
@@ -18,6 +18,13 @@ public class UserDailyAttemptRepository : IUserDailyAttemptRepository
     {
         return await _context.UserDailyAttempts
             .FirstOrDefaultAsync(a => a.UserId == userId && a.DailyChallengeId == challengeId);
+    }
+
+    public async Task<List<UserDailyAttempt>> GetAllAttemptsByUserIdAsync(int userId)
+    {
+        return await _context.UserDailyAttempts
+            .Where(a => a.UserId == userId)
+            .ToListAsync();
     }
 
     public async Task AddAsync(UserDailyAttempt attempt)

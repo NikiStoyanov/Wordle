@@ -14,15 +14,21 @@ var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddCors(options =>
     options.AddPolicy("AllowWordleClient", policy =>
-        policy.WithOrigins("https://localhost:44444", "https://wordle-client.azurewebsites.net")
+        policy.WithOrigins(
+            "http://localhost:4200",
+            "https://localhost:4200",
+            "https://localhost:44444",
+            "https://wordle-client.azurewebsites.net")
               .AllowAnyHeader()
               .AllowAnyMethod()
     )
 );
 
 builder.Services.AddDbContext<WordleDbContext>(options =>
-    options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"))
-);
+{
+    options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"));
+    options.ConfigureWarnings(w => w.Ignore(Microsoft.EntityFrameworkCore.Diagnostics.RelationalEventId.PendingModelChangesWarning));
+});
 
 builder.Services.AddScoped<IDailyChallengeRepository, DailyChallengeRepository>();
 builder.Services.AddScoped<IUserDailyAttemptRepository, UserDailyAttemptRepository>();
@@ -56,7 +62,11 @@ builder.Services.AddAuthentication(options =>
     };
 });
 
-builder.Services.AddControllers();
+builder.Services.AddControllers()
+    .AddJsonOptions(options =>
+    {
+        options.JsonSerializerOptions.Converters.Add(new System.Text.Json.Serialization.JsonStringEnumConverter());
+    });
 builder.Services.AddOpenApi();
 
 var app = builder.Build();
@@ -72,6 +82,7 @@ using (var scope = app.Services.CreateScope())
         var dictionariesPath = Path.Combine(app.Environment.ContentRootPath, "Dictionaries");
 
         await DbSeeder.SeedWordsAsync(context, dictionariesPath, logger);
+        await DbSeeder.SeedDailyChallengesAsync(context, DateTime.UtcNow.Date, logger);
     }
     catch (Exception ex)
     {

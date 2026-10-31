@@ -1,10 +1,12 @@
-﻿namespace Wordle.Server.Core.DTOs.Game;
+namespace Wordle.Server.Core.DTOs.Game;
 
 public class DailyChallengeResultDto
 {
     public bool IsWon { get; set; }
     public bool IsGameOver { get; set; }
+    public int WordLength { get; set; } = 5;
     public string? CorrectWord { get; set; }
     public LetterEvaluationDto[] Evaluations { get; set; } = Array.Empty<LetterEvaluationDto>();
     public int AttemptsUsed { get; set; }
+    public UserStatsDto? Stats { get; set; }
 }

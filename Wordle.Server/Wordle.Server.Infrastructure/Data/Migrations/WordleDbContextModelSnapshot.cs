@@ -33,14 +33,18 @@ namespace Wordle.Server.Infrastructure.Data.Migrations
                     b.Property<DateTime>("Date")
                         .HasColumnType("datetime2");
 
+                    b.Property<int>("Length")
+                        .HasColumnType("int");
+
                     b.Property<int>("WordId")
                         .HasColumnType("int");
 
                     b.HasKey("Id");
 
-                    b.HasIndex("Date");
-
                     b.HasIndex("WordId");
+
+                    b.HasIndex("Date", "Length")
+                        .IsUnique();
 
                     b.ToTable("DailyChallenges");
                 });
@@ -100,6 +104,15 @@ namespace Wordle.Server.Infrastructure.Data.Migrations
                     b.Property<int>("CurrentStreak")
                         .HasColumnType("int");
 
+                    b.Property<string>("Email")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("EmailVerificationCode")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime?>("EmailVerificationCodeExpiry")
+                        .HasColumnType("datetime2");
+
                     b.Property<bool>("IsDeleted")
                         .HasColumnType("bit");
 
@@ -108,6 +121,9 @@ namespace Wordle.Server.Infrastructure.Data.Migrations
 
                     b.Property<string>("PasswordHash")
                         .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("PendingEmail")
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<int>("TotalGamesPlayed")

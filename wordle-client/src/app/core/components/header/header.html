@@ -1,0 +1,72 @@
+<header class="app-header">
+  <div class="header-left">
+    <a routerLink="/" class="title-link">
+      <h1 class="title">WORDLE</h1>
+    </a>
+  </div>
+
+  <div class="header-right">
+    <button
+      class="icon-btn settings-btn"
+      (click)="toggleSettings()"
+      title="Global Settings (Word Length)"
+      aria-label="Settings"
+    >
+      <span class="gear-icon">⚙️</span>
+      <span class="length-badge">{{ currentWordLength() }} Letters</span>
+    </button>
+
+    @if (isAuthenticated()) {
+      <div class="user-info">
+        <a routerLink="/profile" class="user-badge" title="Go to Profile Settings">
+          <span class="avatar-icon">👤</span>
+          <span class="username">{{ currentUser()?.username }}</span>
+        </a>
+        <button class="auth-btn logout-btn" (click)="logout()">Log Out</button>
+      </div>
+    } @else {
+      <div class="guest-actions">
+        <a routerLink="/login" class="auth-btn login-btn">Log In</a>
+        <a routerLink="/register" class="auth-btn register-btn">Sign Up</a>
+      </div>
+    }
+  </div>
+</header>
+
+@if (isSettingsOpen()) {
+  <div class="modal-backdrop" (click)="closeSettings()">
+    <div class="modal-dialog" (click)="$event.stopPropagation()" role="dialog" aria-modal="true">
+      <div class="modal-header">
+        <h3>Game Settings</h3>
+        <button class="close-btn" (click)="closeSettings()" aria-label="Close">✕</button>
+      </div>
+
+      <div class="modal-content">
+        <div class="setting-item">
+          <div class="setting-text">
+            <span class="setting-title">Word Length</span>
+            <span class="setting-description">
+              Choose the length of words to guess (3 to 8 letters). Each length features its own daily challenge!
+            </span>
+          </div>
+
+          <div class="length-selector">
+            @for (len of availableLengths; track len) {
+              <button
+                class="length-btn"
+                [class.active]="currentWordLength() === len"
+                (click)="selectWordLength(len)"
+              >
+                {{ len }}
+              </button>
+            }
+          </div>
+        </div>
+      </div>
+
+      <div class="modal-footer">
+        <button class="primary-btn" (click)="closeSettings()">Done</button>
+      </div>
+    </div>
+  </div>
+}

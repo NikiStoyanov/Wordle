@@ -1,0 +1,112 @@
+<div class="game-container">
+  @if (toastMessage()) {
+    <div class="toast-container" role="status">
+      <div class="toast">
+        {{ toastMessage() }}
+      </div>
+    </div>
+  }
+
+  <div class="length-bar" role="toolbar" aria-label="Word Length Selector">
+    <span class="bar-label">Word Length:</span>
+    <div class="pill-group">
+      @for (len of availableLengths; track len) {
+        <button
+          type="button"
+          class="length-pill"
+          [class.active]="wordLength() === len"
+          (click)="setWordLength(len)"
+          [title]="'Play ' + len + '-letter daily challenge'"
+          [attr.aria-pressed]="wordLength() === len"
+        >
+          {{ len }}
+        </button>
+      }
+    </div>
+  </div>
+
+  @if (!authService.isAuthenticated()) {
+    <div class="guest-banner">
+      <span>Play Wordle Daily ({{ wordLength() }} Letters)! <a routerLink="/login" class="banner-link">Log In</a> or <a routerLink="/register" class="banner-link">Sign Up</a> to submit attempts and save stats.</span>
+    </div>
+  }
+
+  <div class="board" [style.--word-length]="wordLength()">
+    @for (row of boardState; track $index) {
+      <div class="row" [class.shake]="isShakingRow() === $index">
+        @for (tile of row.tiles; track $index) {
+          <div
+            class="tile"
+            [class]="tile.state"
+            [class.filled]="tile.letter !== ''"
+          >
+            {{ tile.letter }}
+          </div>
+        }
+      </div>
+    }
+  </div>
+
+  <div class="keyboard">
+    <div class="key-row">
+      @for (key of ['Q', 'W', 'E', 'R', 'T', 'Y', 'U', 'I', 'O', 'P']; track key) {
+        <button
+          class="key"
+          [class]="getKeyState(key)"
+          [disabled]="isLoading() || isGameOver()"
+          (click)="onKeyPress(key)"
+        >
+          {{ key }}
+        </button>
+      }
+    </div>
+
+    <div class="key-row">
+      <div class="spacer"></div>
+      @for (key of ['A', 'S', 'D', 'F', 'G', 'H', 'J', 'K', 'L']; track key) {
+        <button
+          class="key"
+          [class]="getKeyState(key)"
+          [disabled]="isLoading() || isGameOver()"
+          (click)="onKeyPress(key)"
+        >
+          {{ key }}
+        </button>
+      }
+      <div class="spacer"></div>
+    </div>
+
+    <div class="key-row">
+      <button
+        class="key action"
+        [disabled]="isLoading() || isGameOver()"
+        (click)="onKeyPress('ENTER')"
+      >
+        @if (isLoading()) {
+          ...
+        } @else {
+          ENTER
+        }
+      </button>
+
+      @for (key of ['Z', 'X', 'C', 'V', 'B', 'N', 'M']; track key) {
+        <button
+          class="key"
+          [class]="getKeyState(key)"
+          [disabled]="isLoading() || isGameOver()"
+          (click)="onKeyPress(key)"
+        >
+          {{ key }}
+        </button>
+      }
+
+      <button
+        class="key action"
+        [disabled]="isLoading() || isGameOver()"
+        (click)="onKeyPress('DEL')"
+      >
+        ⌫
+      </button>
+    </div>
+  </div>
+</div>

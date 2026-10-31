@@ -1,4 +1,4 @@
-﻿namespace Wordle.Server.Infrastructure.Data;
+namespace Wordle.Server.Infrastructure.Data;
 
 using Microsoft.EntityFrameworkCore;
 using Core.Entities;
@@ -37,7 +37,8 @@ public class WordleDbContext : DbContext
             .IsUnique();
 
         modelBuilder.Entity<DailyChallenge>()
-            .HasIndex(d => d.Date);
+            .HasIndex(d => new { d.Date, d.Length })
+            .IsUnique();
 
         modelBuilder.Entity<DailyChallenge>()
             .HasOne(d => d.Word)

@@ -1,4 +1,4 @@
-﻿namespace Wordle.Server.Infrastructure.Repositories;
+namespace Wordle.Server.Infrastructure.Repositories;
 
 using Microsoft.EntityFrameworkCore;
 using Data;
@@ -27,6 +27,12 @@ public class UserRepository : IUserRepository
     public async Task<User?> GetByUsernameAsync(string username)
     {
         return await _context.Users.FirstOrDefaultAsync(u => u.Username == username);
+    }
+
+    public async Task<User?> GetByEmailAsync(string email)
+    {
+        var cleanEmail = email.Trim().ToLower();
+        return await _context.Users.FirstOrDefaultAsync(u => u.Email != null && u.Email.ToLower() == cleanEmail);
     }
 
     public async Task SaveChangesAsync()

@@ -1,0 +1,255 @@
+<div class="profile-container">
+  <div class="profile-layout">
+    
+    <!-- Header / Stats Overview Card -->
+    <div class="profile-card stats-overview">
+      <div class="user-main-info">
+        <div class="avatar-large">👤</div>
+        <div class="user-details">
+          <h2>{{ profile()?.username || 'Player' }}</h2>
+          <div class="email-row">
+            @if (profile()?.email) {
+              <span class="email-sub verified-tag">✓ Verified: {{ profile()?.email }}</span>
+            } @else {
+              <span class="email-sub unverified-tag">⚠️ No verified email assigned</span>
+            }
+          </div>
+        </div>
+      </div>
+
+      <div class="stats-grid">
+        <div class="stat-box">
+          <span class="stat-number">{{ profile()?.totalGamesPlayed ?? 0 }}</span>
+          <span class="stat-label">Played</span>
+        </div>
+        <div class="stat-box">
+          <span class="stat-number">{{ profile()?.totalGamesWon ?? 0 }}</span>
+          <span class="stat-label">Won</span>
+        </div>
+        <div class="stat-box">
+          <span class="stat-number highlight">{{ profile()?.currentStreak ?? 0 }}</span>
+          <span class="stat-label">Current Streak</span>
+        </div>
+        <div class="stat-box">
+          <span class="stat-number highlight">{{ profile()?.maxStreak ?? 0 }}</span>
+          <span class="stat-label">Max Streak</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Account Settings Grid -->
+    <div class="settings-grid">
+
+      <!-- Change Username Card -->
+      <div class="profile-card">
+        <div class="section-header">
+          <span class="section-icon">🏷️</span>
+          <h3>Change Username</h3>
+        </div>
+
+        @if (usernameSuccess()) {
+          <div class="alert alert-success">{{ usernameSuccess() }}</div>
+        }
+        @if (usernameError()) {
+          <div class="alert alert-danger">{{ usernameError() }}</div>
+        }
+
+        <form [formGroup]="usernameForm" (ngSubmit)="onUpdateUsername()" novalidate>
+          <div class="form-group">
+            <label for="prof-username">Username</label>
+            <input
+              id="prof-username"
+              type="text"
+              formControlName="username"
+              placeholder="New username"
+              autocomplete="username"
+              [class.invalid]="usernameForm.controls.username.invalid && usernameForm.controls.username.touched"
+            />
+            @if (usernameForm.controls.username.invalid && usernameForm.controls.username.touched) {
+              <span class="field-error">Username must be between 3 and 30 characters.</span>
+            }
+          </div>
+
+          <button type="submit" class="save-btn" [disabled]="isUpdatingUsername() || usernameForm.invalid">
+            @if (isUpdatingUsername()) {
+              <span class="spinner"></span> Saving...
+            } @else {
+              Update Username
+            }
+          </button>
+        </form>
+      </div>
+
+      <!-- Change Email Card with Verification Step -->
+      <div class="profile-card">
+        <div class="section-header">
+          <span class="section-icon">✉️</span>
+          <h3>Email Address</h3>
+        </div>
+
+        @if (emailSuccess()) {
+          <div class="alert alert-success">{{ emailSuccess() }}</div>
+        }
+        @if (emailError()) {
+          <div class="alert alert-danger">{{ emailError() }}</div>
+        }
+
+        <form [formGroup]="emailForm" (ngSubmit)="onRequestEmailChange()" novalidate>
+          <div class="form-group">
+            <label for="prof-email">New Email</label>
+            <input
+              id="prof-email"
+              type="email"
+              formControlName="email"
+              placeholder="name@example.com"
+              autocomplete="email"
+              [class.invalid]="emailForm.controls.email.invalid && emailForm.controls.email.touched"
+            />
+            @if (emailForm.controls.email.invalid && emailForm.controls.email.touched) {
+              <span class="field-error">Please provide a valid email address.</span>
+            }
+          </div>
+
+          <button type="submit" class="save-btn" [disabled]="isRequestingEmail() || emailForm.invalid">
+            @if (isRequestingEmail()) {
+              <span class="spinner"></span> Sending Code...
+            } @else {
+              Request Verification Code
+            }
+          </button>
+        </form>
+
+        <!-- Verification code input section when pending email exists -->
+        @if (pendingEmail()) {
+          <div class="verification-box">
+            <h4>Verify Email</h4>
+            <p class="verification-desc">
+              Enter the 6-digit verification code sent to <strong>{{ pendingEmail() }}</strong> to assign it to your profile.
+            </p>
+
+            @if (verificationCodeInfo()) {
+              <div class="code-preview">
+                <span>Demo Code: <strong>{{ verificationCodeInfo() }}</strong></span>
+              </div>
+            }
+
+            @if (verifySuccess()) {
+              <div class="alert alert-success">{{ verifySuccess() }}</div>
+            }
+            @if (verifyError()) {
+              <div class="alert alert-danger">{{ verifyError() }}</div>
+            }
+
+            <form [formGroup]="verifyCodeForm" (ngSubmit)="onVerifyEmail()" novalidate>
+              <div class="form-group">
+                <label for="verify-code">6-Digit Code</label>
+                <input
+                  id="verify-code"
+                  type="text"
+                  maxlength="6"
+                  formControlName="code"
+                  placeholder="123456"
+                  [class.invalid]="verifyCodeForm.controls.code.invalid && verifyCodeForm.controls.code.touched"
+                />
+                @if (verifyCodeForm.controls.code.invalid && verifyCodeForm.controls.code.touched) {
+                  <span class="field-error">Please enter the 6-digit code.</span>
+                }
+              </div>
+
+              <button type="submit" class="save-btn verify-btn" [disabled]="isVerifyingEmail() || verifyCodeForm.invalid">
+                @if (isVerifyingEmail()) {
+                  <span class="spinner"></span> Verifying...
+                } @else {
+                  Confirm & Assign Email
+                }
+              </button>
+            </form>
+          </div>
+        }
+      </div>
+
+      <!-- Change Password Card -->
+      <div class="profile-card full-width">
+        <div class="section-header">
+          <span class="section-icon">🔒</span>
+          <h3>Change Password</h3>
+        </div>
+
+        @if (passwordSuccess()) {
+          <div class="alert alert-success">{{ passwordSuccess() }}</div>
+        }
+        @if (passwordError()) {
+          <div class="alert alert-danger">{{ passwordError() }}</div>
+        }
+
+        <form [formGroup]="passwordForm" (ngSubmit)="onChangePassword()" novalidate>
+          <div class="form-row">
+            <div class="form-group">
+              <label for="curr-pass">Current Password</label>
+              <input
+                id="curr-pass"
+                type="password"
+                formControlName="currentPassword"
+                placeholder="Current password"
+                autocomplete="current-password"
+                [class.invalid]="passwordForm.controls.currentPassword.invalid && passwordForm.controls.currentPassword.touched"
+              />
+              @if (passwordForm.controls.currentPassword.invalid && passwordForm.controls.currentPassword.touched) {
+                <span class="field-error">Current password is required.</span>
+              }
+            </div>
+
+            <div class="form-group">
+              <label for="new-pass">New Password</label>
+              <input
+                id="new-pass"
+                type="password"
+                formControlName="newPassword"
+                placeholder="New password (min 6 chars)"
+                autocomplete="new-password"
+                [class.invalid]="passwordForm.controls.newPassword.invalid && passwordForm.controls.newPassword.touched"
+              />
+              @if (passwordForm.controls.newPassword.invalid && passwordForm.controls.newPassword.touched) {
+                <span class="field-error">Password must be at least 6 characters.</span>
+              }
+            </div>
+
+            <div class="form-group">
+              <label for="confirm-new-pass">Confirm New Password</label>
+              <input
+                id="confirm-new-pass"
+                type="password"
+                formControlName="confirmPassword"
+                placeholder="Repeat new password"
+                autocomplete="new-password"
+                [class.invalid]="
+                  (passwordForm.controls.confirmPassword.invalid || passwordForm.errors?.['passwordsMismatch']) &&
+                  passwordForm.controls.confirmPassword.touched
+                "
+              />
+              @if (passwordForm.errors?.['passwordsMismatch'] && passwordForm.controls.confirmPassword.touched) {
+                <span class="field-error">Passwords do not match.</span>
+              }
+            </div>
+          </div>
+
+          <button type="submit" class="save-btn" [disabled]="isChangingPassword() || passwordForm.invalid">
+            @if (isChangingPassword()) {
+              <span class="spinner"></span> Updating...
+            } @else {
+              Update Password
+            }
+          </button>
+        </form>
+      </div>
+
+    </div>
+
+    <!-- Actions / Navigation Footer -->
+    <div class="profile-footer">
+      <a routerLink="/" class="back-link">← Back to Wordle</a>
+      <button class="logout-action-btn" (click)="onLogout()">Log Out</button>
+    </div>
+
+  </div>
+</div>
